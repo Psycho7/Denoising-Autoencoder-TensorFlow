@@ -10,7 +10,7 @@ This repo contains the implementation of Denoising Autoencoder (DAE) using Tenso
   - [ ] With or without momentum.
   - [ ] Others.
 - [ ] Feed the output from the hidden layer into SVM. Feed the feture map from LeNet-5 into SVM. Then compare their classification performance.
-- [ ]  *Unspecified* Use the weight trained from DAE to initialize LeNet-5.
+- [ ]  **Unspecified** Use the weight trained from DAE to initialize LeNet-5.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
