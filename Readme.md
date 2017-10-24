@@ -10,7 +10,7 @@ This repo contains the implementation of Denoising Autoencoder (DAE) using Tenso
 ## TODO
 - [ ] Improve original code.
   - [x] Update to Python 3 and TensorFlow 1.0.
-  - [ ] Modify the default values of hyper-parameters.
+  - [x] Modify the default values of hyper-parameters.
   - [ ] Miscellaneous (see [commits](https://github.com/Psycho7/Denoising-Autoencoder-TensorFlow/commits)).
 - [ ] Add Gaussian noise to the corruption module.
 - [ ] Add ReLU as one activation function, in addition to sigmoid and tanh.
