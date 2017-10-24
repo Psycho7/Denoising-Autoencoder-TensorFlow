@@ -11,10 +11,10 @@ class DenoisingAutoencoder(object):
     The interface of the class is sklearn-like.
     """
 
-    def __init__(self, model_name='dae', n_components=256, main_dir='dae/', enc_act_func='tanh',
-                 dec_act_func='none', loss_func='mean_squared', num_epochs=10, batch_size=10, dataset='mnist',
-                 xavier_init=1, opt='gradient_descent', learning_rate=0.01, momentum=0.5, corr_type='none',
-                 corr_frac=0., verbose=1, seed=-1):
+    def __init__(self, model_name, n_components, main_dir, enc_act_func,
+                 dec_act_func, loss_func, num_epochs, batch_size, dataset,
+                 xavier_init, opt, learning_rate, momentum, corr_type,
+                 corr_frac, verbose, seed):
         """
         :param main_dir: main directory to put the models, data and summary directories
         :param n_components: number of hidden units
