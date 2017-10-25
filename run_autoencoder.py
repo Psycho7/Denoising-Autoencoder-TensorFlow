@@ -22,7 +22,8 @@ flags.DEFINE_boolean('encode_test', False, 'Whether to encode and store the test
 
 # Stacked Denoising Autoencoder specific parameters
 flags.DEFINE_integer('n_components', 256, 'Number of hidden units in the dae.')
-flags.DEFINE_string('corr_type', 'none', 'Type of input corruption. ["none", "masking", "salt_and_pepper"]')
+flags.DEFINE_string('corr_type', 'gaussian',
+                    'Type of input corruption. ["gaussian", "none", "masking", "salt_and_pepper"]')
 flags.DEFINE_float('corr_frac', 0., 'Fraction of the input to corrupt.')
 flags.DEFINE_integer('xavier_init', 1, 'Value for the constant in xavier weights initialization.')
 flags.DEFINE_string('enc_act_func', 'tanh', 'Activation function for the encoder. ["sigmoid", "tanh"]')
@@ -40,7 +41,7 @@ flags.DEFINE_integer('batch_size', 500, 'Size of each mini-batch.')
 assert FLAGS.dataset in ['mnist', 'cifar10']
 assert FLAGS.enc_act_func in ['sigmoid', 'tanh']
 assert FLAGS.dec_act_func in ['sigmoid', 'tanh', 'none']
-assert FLAGS.corr_type in ['masking', 'salt_and_pepper', 'none']
+assert FLAGS.corr_type in ['gaussian', 'masking', 'salt_and_pepper', 'none']
 assert 0. <= FLAGS.corr_frac <= 1.
 assert FLAGS.loss_func in ['cross_entropy', 'mean_squared']
 assert FLAGS.opt in ['gradient_descent', 'ada_grad', 'momentum']

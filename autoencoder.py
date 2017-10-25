@@ -163,8 +163,9 @@ class DenoisingAutoencoder(object):
         noise method of this autoencoder.
         :return: corrupted data
         """
-
-        if self.corr_type == 'masking':
+        if self.corr_type == 'gaussian':
+            x_corrupted = utils.gaussian_noise(data, v)
+        elif self.corr_type == 'masking':
             x_corrupted = utils.masking_noise(data, v)
 
         elif self.corr_type == 'salt_and_pepper':
