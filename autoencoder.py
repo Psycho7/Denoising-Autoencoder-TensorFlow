@@ -434,7 +434,7 @@ class DenoisingAutoencoder(object):
                 image_path = outdir + self.model_name + '-enc_weights_{}.png'.format(p)
                 utils.gen_image(enc_w, width, height, image_path)
 
-    def get_images(self, images, channel=3, width=32, height=32,  outdir='img/', model_path=None):
+    def get_images(self, images, prefix, channel=3, width=32, height=32,  outdir='img/', model_path=None):
         assert channel in [1, 3]
 
         outdir = self.data_dir + outdir
@@ -461,17 +461,17 @@ class DenoisingAutoencoder(object):
                     origin,
                     width,
                     height,
-                    '%s%s-origin-%d.png' % (outdir, self.model_name, i),
+                    '%s%s-%s-origin-%d.png' % (outdir, self.model_name, prefix, i),
                     image_type)
                 utils.gen_image(
                     corrupted,
                     width,
                     height,
-                    '%s%s-corrupted-%d.png' % (outdir, self.model_name, i),
+                    '%s%s-%s-corrupted-%d.png' % (outdir, self.model_name, prefix, i),
                     image_type)
                 utils.gen_image(
                     decoded,
                     width,
                     height,
-                    '%s%s-decoded-%d.png' % (outdir, self.model_name, i),
+                    '%s%s-%s-decoded-%d.png' % (outdir, self.model_name, prefix, i),
                     image_type)

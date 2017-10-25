@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # dae.get_weights_as_images(28, 28, max_images=FLAGS.weight_images)
     index = [1100, 2200, 3300, 4400, 5500, 6600, 7700]
     trImg, teImg = [trX[index], teX[index]]
-    dae.get_images(trImg)
-    dae.get_images(teImg)
+    dae.get_images(trImg, "train")
+    dae.get_images(teImg, "test")
 
 
