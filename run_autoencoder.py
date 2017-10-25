@@ -34,7 +34,7 @@ flags.DEFINE_integer('weight_images', 0, 'Number of weight images to generate.')
 flags.DEFINE_string('opt', 'gradient_descent', '["gradient_descent", "ada_grad", "momentum"]')
 flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
 flags.DEFINE_float('momentum', 0.5, 'Momentum parameter.')
-flags.DEFINE_integer('num_epochs', 200, 'Number of epochs.')
+flags.DEFINE_integer('num_epochs', 300, 'Number of epochs.')
 flags.DEFINE_integer('batch_size', 500, 'Size of each mini-batch.')
 
 assert FLAGS.dataset in ['mnist', 'cifar10']
@@ -87,5 +87,10 @@ if __name__ == '__main__':
     dae.transform(teX, name='test', save=FLAGS.encode_test)
 
     # save images
-    dae.get_weights_as_images(28, 28, max_images=FLAGS.weight_images)
+    # dae.get_weights_as_images(28, 28, max_images=FLAGS.weight_images)
+    index = [1100, 2200, 3300, 4400, 5500, 6600, 7700]
+    trImg, teImg = [trX[index], teX[index]]
+    dae.get_images(trImg)
+    dae.get_images(teImg)
+
 

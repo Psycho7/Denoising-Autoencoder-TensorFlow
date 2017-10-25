@@ -433,3 +433,45 @@ class DenoisingAutoencoder(object):
                 enc_w = np.array([i[p] for i in enc_weights])
                 image_path = outdir + self.model_name + '-enc_weights_{}.png'.format(p)
                 utils.gen_image(enc_w, width, height, image_path)
+
+    def get_images(self, images, channel=3, width=32, height=32,  outdir='img/', model_path=None):
+        assert channel in [1, 3]
+
+        outdir = self.data_dir + outdir
+        if not os.path.isdir(outdir):
+            os.mkdir(outdir)
+
+        image_type = "grey" if channel == 1 else "color"
+        image_num = images.shape[0]
+        corr_images = self._corrupt_input(images, np.round(self.corr_frac * image_num).astype(np.int))
+
+        with tf.Session() as self.tf_session:
+            if model_path is not None:
+                self.tf_saver.restore(self.tf_session, model_path)
+            else:
+                self.tf_saver.restore(self.tf_session, self.models_dir + self.model_name)
+
+            decode = self.decode.eval({self.input_data: images, self.input_data_corr: corr_images})
+
+            for i in range(image_num):
+                origin = (np.array(images[i]) * 255).astype(int)
+                corrupted = (np.array(corr_images[i]) * 255).astype(int)
+                decoded = (np.array(decode[i]) * 255).astype(int)
+                utils.gen_image(
+                    origin,
+                    width,
+                    height,
+                    '%s%s-origin-%d.png' % (outdir, self.model_name, i),
+                    image_type)
+                utils.gen_image(
+                    corrupted,
+                    width,
+                    height,
+                    '%s%s-corrupted-%d.png' % (outdir, self.model_name, i),
+                    image_type)
+                utils.gen_image(
+                    decoded,
+                    width,
+                    height,
+                    '%s%s-decoded-%d.png' % (outdir, self.model_name, i),
+                    image_type)
