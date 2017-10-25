@@ -84,58 +84,6 @@ def salt_and_pepper_noise(X, v):
                 X_noise[i][m] = mx
 
     return X_noise
-    
-    
-def masking_noise(X, v):
-    """ Apply masking noise to data in X, in other words a fraction v of elements of X
-    (chosen at random) is forced to zero.
-
-    :param X: array_like, Input data
-    :param v: int, fraction of elements to distort
-
-    :return: transformed data
-    """
-    X_noise = X.copy()
-
-    n_samples = X.shape[0]
-    n_features = X.shape[1]
-
-    for i in range(n_samples):
-        mask = np.random.randint(0, n_features, v)
-
-        for m in mask:
-            X_noise[i][m] = 0.
-
-    return X_noise
-
-
-def salt_and_pepper_noise(X, v):
-    """ Apply salt and pepper noise to data in X, in other words a fraction v of elements of X
-    (chosen at random) is set to its maximum or minimum value according to a fair coin flip.
-    If minimum or maximum are not given, the min (max) value in X is taken.
-
-    :param X: array_like, Input data
-    :param v: int, fraction of elements to distort
-
-    :return: transformed data
-    """
-    X_noise = X.copy()
-    n_features = X.shape[1]
-
-    mn = X.min()
-    mx = X.max()
-
-    for i, sample in enumerate(X):
-        mask = np.random.randint(0, n_features, v)
-
-        for m in mask:
-
-            if np.random.random() < 0.5:
-                X_noise[i][m] = mn
-            else:
-                X_noise[i][m] = mx
-
-    return X_noise
 
 
 def gen_image(img, width, height, outfile, img_type='grey'):
