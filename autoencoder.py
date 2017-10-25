@@ -163,8 +163,9 @@ class DenoisingAutoencoder(object):
         noise method of this autoencoder.
         :return: corrupted data
         """
-
-        if self.corr_type == 'masking':
+        if self.corr_type == 'gaussian':
+            x_corrupted = utils.gaussian_noise(data, sigma=self.corr_frac)
+        elif self.corr_type == 'masking':
             x_corrupted = utils.masking_noise(data, v)
 
         elif self.corr_type == 'salt_and_pepper':
@@ -447,6 +448,15 @@ class DenoisingAutoencoder(object):
         if not os.path.isdir(outdir):
             os.mkdir(outdir)
 
+        def create_image_path(ocd, num):
+            return '%s%s-%s-%d.png' % (outdir, prefix, ocd, num)
+
+        def save_image(image_data, file_path):
+            image = np.array(image_data * 255).astype(int)
+            image = image.reshape(channel, width, height).transpose(1, 2, 0)
+            from scipy import misc
+            misc.imsave(file_path, image)
+
         image_num = images.shape[0]
         corr_images = self._corrupt_input(images, np.round(self.corr_frac * image_num).astype(np.int))
 
@@ -457,16 +467,6 @@ class DenoisingAutoencoder(object):
                 self.tf_saver.restore(self.tf_session, self.models_dir + self.model_name)
 
             decode = self.decode.eval({self.input_data: images, self.input_data_corr: corr_images})
-
-            def create_image_path(ocd, num):
-                return '%s%s-%s-%d.png' % (outdir, prefix, ocd, num)
-
-            def save_image(image_data, file_path):
-                image = np.array(image_data * 255).astype(int)
-                image = image.reshape(channel, width, height).transpose(1, 2, 0)
-                from scipy import misc
-                misc.imsave(file_path, image)
-                # utils.gen_image(image, width, height, file_path, image_type)
 
             for i in range(image_num):
                 origin = images[i]

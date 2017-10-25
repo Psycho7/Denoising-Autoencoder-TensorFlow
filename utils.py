@@ -34,6 +34,17 @@ def gen_batches(data, batch_size):
         yield data[i:i+batch_size]
 
 
+def gaussian_noise(X, mu=0, sigma=0.1):
+    signal = X.copy()
+    n_samples = X.shape[0]
+    n_features = X.shape[1]
+
+    noise = np.random.normal(mu, sigma, [n_samples, n_features])
+    signal += noise
+
+    return signal
+
+
 def masking_noise(X, v):
     """ Apply masking noise to data in X, in other words a fraction v of elements of X
     (chosen at random) is forced to zero.
