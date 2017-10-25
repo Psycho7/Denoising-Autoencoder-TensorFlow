@@ -14,7 +14,7 @@ This repo contains the implementation of Denoising Autoencoder (DAE) using Tenso
   - [x] Export Origin / Corrupted / Decoded image.
   - [ ] Miscellaneous (see [commits](https://github.com/Psycho7/Denoising-Autoencoder-TensorFlow/commits)).
 - [ ] Add Gaussian noise to the corruption module.
-- [ ] Add ReLU as one activation function, in addition to sigmoid and tanh.
+- [x] Add ReLU as one activation function, in addition to sigmoid and tanh.
 - [ ] Compare the performance between different activation functions.
 - [ ] Compare the performance between cross entropy and squared loss.
 - [ ] Compare different learning approaches.
