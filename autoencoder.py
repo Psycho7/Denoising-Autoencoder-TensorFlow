@@ -441,6 +441,10 @@ class DenoisingAutoencoder(object):
         if not os.path.isdir(outdir):
             os.mkdir(outdir)
 
+        image_dir = outdir + "/" + self.model_name + "/"
+        if not os.path.isdir(image_dir):
+            os.mkdir(image_dir)
+
         image_type = "grey" if channel == 1 else "color"
         image_num = images.shape[0]
         corr_images = self._corrupt_input(images, np.round(self.corr_frac * image_num).astype(np.int))
@@ -453,25 +457,26 @@ class DenoisingAutoencoder(object):
 
             decode = self.decode.eval({self.input_data: images, self.input_data_corr: corr_images})
 
+            def create_image_path(ocd, num):
+                return '%s%s-%s-%d.png' % (image_dir, prefix, ocd, num)
+
+            def save_image(image_data, file_path):
+                image = np.array(image_data * 255).astype(int)
+                image = image.reshape(channel, width, height).transpose(1, 2, 0)
+                from scipy import misc
+                misc.imsave(file_path, image)
+                # utils.gen_image(image, width, height, file_path, image_type)
+
             for i in range(image_num):
-                origin = (np.array(images[i]) * 255).astype(int)
-                corrupted = (np.array(corr_images[i]) * 255).astype(int)
-                decoded = (np.array(decode[i]) * 255).astype(int)
-                utils.gen_image(
+                origin = images[i]
+                corrupted = corr_images[i]
+                decoded = decode[i]
+                save_image(
                     origin,
-                    width,
-                    height,
-                    '%s%s-%s-origin-%d.png' % (outdir, self.model_name, prefix, i),
-                    image_type)
-                utils.gen_image(
+                    create_image_path("origin", i))
+                save_image(
                     corrupted,
-                    width,
-                    height,
-                    '%s%s-%s-corrupted-%d.png' % (outdir, self.model_name, prefix, i),
-                    image_type)
-                utils.gen_image(
+                    create_image_path("corrupted", i))
+                save_image(
                     decoded,
-                    width,
-                    height,
-                    '%s%s-%s-decoded-%d.png' % (outdir, self.model_name, prefix, i),
-                    image_type)
+                    create_image_path("decoded", i))
