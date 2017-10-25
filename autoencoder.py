@@ -441,11 +441,6 @@ class DenoisingAutoencoder(object):
         if not os.path.isdir(outdir):
             os.mkdir(outdir)
 
-        image_dir = outdir + "/" + self.model_name + "/"
-        if not os.path.isdir(image_dir):
-            os.mkdir(image_dir)
-
-        image_type = "grey" if channel == 1 else "color"
         image_num = images.shape[0]
         corr_images = self._corrupt_input(images, np.round(self.corr_frac * image_num).astype(np.int))
 
@@ -458,7 +453,7 @@ class DenoisingAutoencoder(object):
             decode = self.decode.eval({self.input_data: images, self.input_data_corr: corr_images})
 
             def create_image_path(ocd, num):
-                return '%s%s-%s-%d.png' % (image_dir, prefix, ocd, num)
+                return '%s%s-%s-%d.png' % (outdir, prefix, ocd, num)
 
             def save_image(image_data, file_path):
                 image = np.array(image_data * 255).astype(int)
