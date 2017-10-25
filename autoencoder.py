@@ -251,7 +251,10 @@ class DenoisingAutoencoder(object):
         """
 
         with tf.name_scope("W_x_bh"):
-            if self.enc_act_func == 'sigmoid':
+            if self.enc_act_func == 'relu':
+                self.encode = tf.nn.relu(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
+
+            elif self.enc_act_func == 'sigmoid':
                 self.encode = tf.nn.sigmoid(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
 
             elif self.enc_act_func == 'tanh':
@@ -267,7 +270,10 @@ class DenoisingAutoencoder(object):
         """
 
         with tf.name_scope("Wg_y_bv"):
-            if self.dec_act_func == 'sigmoid':
+            if self.dec_act_func == 'relu':
+                self.decode = tf.nn.relu(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
+
+            elif self.dec_act_func == 'sigmoid':
                 self.decode = tf.nn.sigmoid(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
 
             elif self.dec_act_func == 'tanh':
