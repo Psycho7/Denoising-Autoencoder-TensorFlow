@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import os
+import csv
 
 import zconfig
 import utils
@@ -127,13 +128,26 @@ class DenoisingAutoencoder(object):
 
         corruption_ratio = np.round(self.corr_frac * train_set.shape[1]).astype(np.int)
 
+        if self.verbose == 1:
+            outfile = self.data_dir + self.model_name + '.csv'
+            file = open(outfile, 'w', newline='')
+            fieldnames = ['epoch', 'train_err', 'valid_err']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+        else:
+            file = None
+            writer = None
+
         for i in range(self.num_epochs):
 
             self._run_train_step(train_set, corruption_ratio)
 
-            if i % 5 == 0:
+            if i % 10 == 0:
                 if validation_set is not None:
-                    self._run_validation_error_and_summaries(i, validation_set)
+                    self._run_evaluate_model(i, train_set, validation_set, writer)
+
+        if file is not None:
+            file.close()
 
     def _run_train_step(self, train_set, corruption_ratio):
 
@@ -179,25 +193,35 @@ class DenoisingAutoencoder(object):
 
         return x_corrupted
 
-    def _run_validation_error_and_summaries(self, epoch, validation_set):
+    def _run_evaluate_model(self, epoch, train_set, validation_set, writer):
 
         """ Run the summaries and error computation on the validation set.
 
         :param epoch: current epoch
+        :param train_set: training data
         :param validation_set: validation data
 
         :return: self
         """
 
+        tr_feed = {self.input_data: train_set, self.input_data_corr: train_set}
         vl_feed = {self.input_data: validation_set, self.input_data_corr: validation_set}
-        result = self.tf_session.run([self.tf_merged_summaries, self.cost], feed_dict=vl_feed)
-        summary_str = result[0]
-        err = result[1]
+        vl_result = self.tf_session.run([self.tf_merged_summaries, self.cost], feed_dict=vl_feed)
+        summary_str = vl_result[0]
+        vl_err = vl_result[1]
+        tr_result = self.tf_session.run([self.tf_merged_summaries, self.cost], feed_dict=tr_feed)
+        tr_err = tr_result[1]
 
         self.tf_summary_writer.add_summary(summary_str, epoch)
 
         if self.verbose == 1:
-            print("Validation cost at step %s: %s" % (epoch, err))
+            print("Epoch #%s: Train cost: %s, Validation cost: %s" % (epoch, tr_err, vl_err))
+            # ['epoch', 'train_err', 'valid_err']
+            writer.writerow({
+                'epoch': epoch,
+                'train_err': tr_err,
+                'valid_err': vl_err
+            })
 
     def _build_model(self, n_features):
         """ Creates the computational graph.
