@@ -33,9 +33,9 @@ flags.DEFINE_string('loss_func', 'mean_squared', 'Loss function. ["mean_squared"
 flags.DEFINE_integer('verbose', 1, 'Level of verbosity. 0 - silent, 1 - print accuracy.')
 flags.DEFINE_integer('weight_images', 0, 'Number of weight images to generate.')
 flags.DEFINE_string('opt', 'gradient_descent', '["gradient_descent", "ada_grad", "momentum"]')
-flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.05, 'Initial learning rate.')
 flags.DEFINE_float('momentum', 0.5, 'Momentum parameter.')
-flags.DEFINE_integer('num_epochs', 300, 'Number of epochs.')
+flags.DEFINE_integer('num_epochs', 500, 'Number of epochs.')
 flags.DEFINE_integer('batch_size', 500, 'Size of each mini-batch.')
 
 assert FLAGS.dataset in ['mnist', 'cifar10']

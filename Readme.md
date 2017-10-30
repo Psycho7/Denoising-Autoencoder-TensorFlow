@@ -15,11 +15,9 @@ This repo contains the implementation of Denoising Autoencoder (DAE) using Tenso
   - [ ] Miscellaneous (see [commits](https://github.com/Psycho7/Denoising-Autoencoder-TensorFlow/commits)).
 - [x] Add Gaussian noise to the corruption module.
 - [x] Add ReLU as one activation function, in addition to sigmoid and tanh.
-- [ ] Compare the performance between different activation functions.
-- [ ] Compare the performance between cross entropy and squared loss.
-- [ ] Compare different learning approaches.
-  - [ ] With or without momentum.
-  - [ ] **Unspecified yet** Others.
+- [x] Compare the performance between different activation functions.
+- [x] Compare the performance between cross entropy and squared loss.
+- [x] Compare different learning approaches.
 - [ ] Feed the output from the hidden layer into SVM. Feed the feture map from LeNet-5 into SVM. Then compare their classification performance.
 - [ ] Use the weight trained from DAE to initialize LeNet-5.
 
