@@ -419,6 +419,10 @@ class DenoisingAutoencoder(object):
         data_dir = zconfig.data_dir + self.main_dir
         summary_dir = zconfig.summary_dir + self.main_dir
 
+        for d in [zconfig.models_dir, zconfig.data_dir, zconfig.summary_dir]:
+            if not os.path.isdir(d):
+                os.mkdir(d)
+
         for d in [models_dir, data_dir, summary_dir]:
             if not os.path.isdir(d):
                 os.mkdir(d)
