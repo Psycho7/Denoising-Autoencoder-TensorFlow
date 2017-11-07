@@ -263,7 +263,7 @@ class DenoisingAutoencoder(object):
                        visible bias(shape(n_features)))
         """
 
-        W_ = tf.Variable(utils.xavier_init(n_features, self.n_components, self.xavier_init), name='enc-w')
+        W_ = tf.Variable(tf.truncated_normal([5, 5, 3, 64], stddev=5e-2), name='enc-w')
         bh_ = tf.Variable(tf.zeros([self.n_components]), name='hidden-bias')
         bv_ = tf.Variable(tf.zeros([n_features]), name='visible-bias')
 
@@ -277,13 +277,14 @@ class DenoisingAutoencoder(object):
 
         with tf.name_scope("W_x_bh"):
             if self.enc_act_func == 'relu':
-                self.encode = tf.nn.relu(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
-
-            elif self.enc_act_func == 'sigmoid':
-                self.encode = tf.nn.sigmoid(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
-
-            elif self.enc_act_func == 'tanh':
-                self.encode = tf.nn.tanh(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
+                conv = tf.nn.conv2d(self.input_data_corr, self.W_, [1, 1, 1, 1], padding='SAME')
+                self.encode = tf.nn.relu(tf.nn.bias_add(conv, self.bh_))
+            #
+            # elif self.enc_act_func == 'sigmoid':
+            #     self.encode = tf.nn.sigmoid(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
+            #
+            # elif self.enc_act_func == 'tanh':
+            #     self.encode = tf.nn.tanh(tf.matmul(self.input_data_corr, self.W_) + self.bh_)
 
             else:
                 self.encode = None
@@ -296,16 +297,22 @@ class DenoisingAutoencoder(object):
 
         with tf.name_scope("Wg_y_bv"):
             if self.dec_act_func == 'relu':
-                self.decode = tf.nn.relu(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
-
-            elif self.dec_act_func == 'sigmoid':
-                self.decode = tf.nn.sigmoid(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
-
-            elif self.dec_act_func == 'tanh':
-                self.decode = tf.nn.tanh(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
-
-            elif self.dec_act_func == 'none':
-                self.decode = tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_
+                deconv = tf.nn.conv2d_transpose(
+                    self.encode,
+                    self.W_,
+                    output_shape=self.input_data.shape,
+                    strides=[1, 1, 1, 1],
+                    padding='SAME')
+                self.decode = tf.nn.relu(tf.nn.bias_add(deconv, self.bh_))
+            #
+            # elif self.dec_act_func == 'sigmoid':
+            #     self.decode = tf.nn.sigmoid(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
+            #
+            # elif self.dec_act_func == 'tanh':
+            #     self.decode = tf.nn.tanh(tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_)
+            #
+            # elif self.dec_act_func == 'none':
+            #     self.decode = tf.matmul(self.encode, tf.transpose(self.W_)) + self.bv_
 
             else:
                 self.decode = None
@@ -365,6 +372,9 @@ class DenoisingAutoencoder(object):
 
             if save:
                 np.save(self.data_dir + self.model_name + '-' + name, encoded_data)
+
+            np.save("W_", self.W_)
+            np.save("bh_", self.bh_)
 
             return encoded_data
 
